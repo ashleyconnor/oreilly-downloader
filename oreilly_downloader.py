@@ -34,6 +34,11 @@ def to_xhtml(s, root_path, path, stylesheets):
             if (el.get(attr) or '').startswith(root_path):
                 el.set(attr, posixpath.relpath(el.get(attr), base))
 
+    for el in tree.iter('svg'):
+        for attr in ['viewBox', 'preserveAspectRatio']:
+            if attr.lower() in el.attrib:
+                el.set(attr, el.attrib.pop(attr.lower()))
+
     if tree.tag != 'html':
         wrapper = etree.Element('html', nsmap={
             None: 'http://www.w3.org/1999/xhtml',
