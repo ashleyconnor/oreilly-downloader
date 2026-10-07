@@ -15,10 +15,10 @@ from lxml import html as lhtml
 
 BASE_URL = 'https://learning.oreilly.com'
 
-CONTAINER = b"""<?xml version="1.0"?>
+CONTAINER = """<?xml version="1.0"?>
 <container xmlns="urn:oasis:names:tc:opendocument:xmlns:container" version="1.0">
     <rootfiles>
-        <rootfile full-path="EPUB/content.opf" media-type="application/oebps-package+xml"/>
+        <rootfile full-path="{}" media-type="application/oebps-package+xml"/>
     </rootfiles>
 </container>
 """  # noqa
@@ -74,7 +74,6 @@ async def fetch_book(book_id, zfh, session, *, delay=0):
             zfh.writestr(path, content)
 
     zfh.writestr('mimetype', b'application/epub+zip', compress_type=zipfile.ZIP_STORED)
-    zfh.writestr('META-INF/container.xml', CONTAINER)
 
     url = BASE_URL + root_path
     while url:
@@ -90,6 +89,9 @@ async def fetch_book(book_id, zfh, session, *, delay=0):
         url = data.get('next')
         if url:
             await asyncio.sleep(delay)
+
+    opf = next(p for p in zfh.namelist() if p.endswith('.opf'))
+    zfh.writestr('META-INF/container.xml', CONTAINER.format(opf))
 
 
 async def amain():
