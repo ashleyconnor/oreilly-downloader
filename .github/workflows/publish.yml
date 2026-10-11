@@ -1,0 +1,27 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags: ['*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      contents: read
+      id-token: write  # trusted publishing
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+
+      - name: Set version from tag
+        # accepts both "1.2.3" and "v1.2.3"
+        run: uv version --frozen "${GITHUB_REF_NAME#v}"
+
+      - run: uv build
+
+      - name: Smoke test
+        run: uvx --from dist/*.whl orlydown --help
+
+      - run: uv publish
