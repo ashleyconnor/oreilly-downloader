@@ -1,5 +1,9 @@
 # orlydown
 
+[![PyPI](https://img.shields.io/pypi/v/orlydown)](https://pypi.org/project/orlydown/)
+[![Python versions](https://img.shields.io/pypi/pyversions/orlydown)](https://pypi.org/project/orlydown/)
+[![License](https://img.shields.io/pypi/l/orlydown)](LICENSE)
+
 O'Reilly provides all of their books in epub format, but only through their own
 reader. `orlydown` downloads the individual files and assembles them back into
 a complete epub, so you can read your books in any reader (Apple Books, Calibre,
