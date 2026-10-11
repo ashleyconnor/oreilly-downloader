@@ -124,7 +124,7 @@ Publishing uses PyPI [trusted
 publishing](https://docs.pypi.org/trusted-publishers/), so no API token is
 stored in the repository. It needs a one-time setup: on PyPI, add a trusted
 publisher for project `orlydown` with owner `ashleyconnor`, repository
-`oreilly-downloader`, workflow `publish.yml` and environment `pypi`.
+`orlydown`, workflow `publish.yml` and environment `pypi`.
 
 ## Similar projects
 

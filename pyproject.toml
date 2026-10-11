@@ -22,8 +22,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ashleyconnor/oreilly-downloader"
-Issues = "https://github.com/ashleyconnor/oreilly-downloader/issues"
+Homepage = "https://github.com/ashleyconnor/orlydown"
+Issues = "https://github.com/ashleyconnor/orlydown/issues"
 
 [project.scripts]
 orlydown = "oreilly_downloader:main"
