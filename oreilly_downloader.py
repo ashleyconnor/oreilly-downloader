@@ -148,8 +148,14 @@ def fetch_book(book_id, zfh, get, *, delay=0):
 
 def main():
     parser = argparse.ArgumentParser(prog='orlydown')
-    parser.add_argument('book_id')
-    parser.add_argument('--jwt')
+    parser.add_argument('book_id', help=(
+        'ID of the book, as found in its URL, '
+        'e.g. 9781491958698 in https://learning.oreilly.com/library/view/…/9781491958698/'
+    ))
+    parser.add_argument('--jwt', metavar='TOKEN', help=(
+        'Value of the orm-jwt cookie from a logged-in browser session. '
+        'Without it, chapters are cut short.'
+    ))
     parser.add_argument('--require-auth', action='store_true', help=(
         'Exit with an error instead of downloading truncated chapters '
         'when no JWT is given or it is not accepted.'
