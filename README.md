@@ -112,8 +112,8 @@ uv build
 
 ### Releasing
 
-Pushing a tag publishes that version to PyPI. The tag name is the version,
-with an optional leading `v`:
+Pushing a `v*` tag publishes that version to PyPI. The version is the tag name
+without the `v`, so `v1.0.0` publishes `1.0.0`:
 
 ```
 git tag v1.0.0
