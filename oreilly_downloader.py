@@ -116,22 +116,31 @@ async def amain():
         'Seconds to wait between batches of file downloads. '
         'Workaround for 403 errors caused by rate-limiting.'
     ))
+    parser.add_argument('--title', action='store_true', help=(
+        'Name the file after the book title instead of its ID.'
+    ))
     args = parser.parse_args()
 
     filename = f'{args.book_id}.epub'
 
-    with zipfile.ZipFile(filename, 'w') as zfh:
-        async with aiohttp.ClientSession(
-            raise_for_status=True,
-            cookies={'orm-jwt': args.jwt},
-        ) as session:
-            if not args.jwt:
-                print('No JWT provided. Continuing without…')
-            elif await check_auth(session):
-                print('Authentication successful.')
-            else:
-                print('Authentication failed. Continuing without…')
+    async with aiohttp.ClientSession(
+        raise_for_status=True,
+        cookies={'orm-jwt': args.jwt},
+    ) as session:
+        if not args.jwt:
+            print('No JWT provided. Continuing without…')
+        elif await check_auth(session):
+            print('Authentication successful.')
+        else:
+            print('Authentication failed. Continuing without…')
 
+        if args.title:
+            url = f'{BASE_URL}/api/v2/epubs/urn:orm:book:{args.book_id}/'
+            async with session.get(url) as r:
+                title = (await r.json())['title']
+            filename = title.replace(':', ' -').replace('/', '-') + '.epub'
+
+        with zipfile.ZipFile(filename, 'w') as zfh:
             await fetch_book(args.book_id, zfh, session, delay=args.delay)
 
     print(f'created {filename}')
