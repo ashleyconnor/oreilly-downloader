@@ -119,7 +119,7 @@ def fetch_book(book_id, zfh, get, *, delay=0):
     html = {}
 
     def download(result):
-        return f'EPUB/{result["full_path"]}', get(result['url'])
+        return result, get(result['url'])
 
     zfh.writestr('mimetype', b'application/epub+zip', compress_type=zipfile.ZIP_STORED)
 
@@ -129,8 +129,10 @@ def fetch_book(book_id, zfh, get, *, delay=0):
             print(f'fetching {url}')
             data = json.loads(get(url))
 
-            for path, content in pool.map(download, data.get('results', [])):
-                if path.endswith(('.html', '.xhtml')):
+            for result, content in pool.map(download, data.get('results', [])):
+                path = f'EPUB/{result["full_path"]}'
+                # chapters can be .html, .xhtml or .htm
+                if result['media_type'] in ['text/html', 'application/xhtml+xml']:
                     html[path] = content
                 else:
                     zfh.writestr(path, content)
