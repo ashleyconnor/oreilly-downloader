@@ -82,8 +82,14 @@ $ orlydown 9781491958698 --jwt 'XYZ' --title
 created Test-Driven Development with Python, 2nd Edition.epub
 ```
 
-A `:` in the title becomes ` -` and a `/` becomes `-`, so the name is safe to
-use as a filename.
+A `:` in the title becomes ` -`, `/` and `\` become `-`, and other characters
+that aren't allowed in filenames on Windows (`<>|?*`) are removed, so the name
+works on every platform. Long titles are shortened.
+
+The epub is written to a `.partial` file first and only renamed once every
+file has downloaded, so a failed run never leaves an incomplete book behind.
+Requests that fail with a 403, 429 or 5xx error, or because of a network
+problem, are retried a few times with increasing waits.
 
 By default, a missing or rejected token only prints a warning and the download
 carries on with truncated chapters. Add `--require-auth` to stop with an error
@@ -103,7 +109,7 @@ $ echo $?
 | `--jwt TOKEN`    | Your `orm-jwt` cookie. Without it, chapters are cut short.                    |
 | `--require-auth` | Exit with an error if no JWT is given or it isn't accepted.                   |
 | `--title`        | Name the epub after the book title instead of its ID.                         |
-| `--delay N`      | Wait `N` seconds between batches of downloads. Try `5` if you get 403 errors. |
+| `--delay N`      | Wait `N` seconds between pages of the file list. Try `5` if you get 403 errors. |
 
 ## Development
 
@@ -111,6 +117,7 @@ The project is managed with [uv](https://docs.astral.sh/uv/):
 
 ```
 uv run orlydown --help
+uv run python -m unittest discover -s tests
 uv build
 ```
 
